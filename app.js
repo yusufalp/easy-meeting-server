@@ -6,6 +6,7 @@ const morgan = require("morgan");
 const path = require("node:path");
 
 const eventRoutes = require("./routes/eventRoutes");
+const userAvailabilityRoutes = require("./routes/userAvailabilityRoutes");
 const userRoutes = require("./routes/userRoutes");
 
 const app = express();
@@ -19,6 +20,7 @@ app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/events", eventRoutes);
+app.use("/api/userAvailability", userAvailabilityRoutes);
 app.use("/api/users", userRoutes);
 
 app.get("/", (req, res, next) => {
