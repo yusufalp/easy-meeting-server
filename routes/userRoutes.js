@@ -1,13 +1,19 @@
 const express = require("express");
 
+const {
+  getAllUsers,
+  getUserById,
+  findUserAndUpdateProfile,
+  findUserAndUpdatePassword,
+} = require("../controllers/userControllers");
+
+const { isAuthenticated } = require("../middleware");
 const router = express.Router();
 
-router.get("/", (req, res, next) => res.send("<p>Get all users</p>"));
-router.get("/:userId", (req, res, next) => res.send("<p>Get a user by id</p>"));
+router.get("/", getAllUsers);
+router.get("/:userId", getUserById);
 
-router.put("/:userId/profile", (req, res, next) =>
-  res.send("<p>Find a user by id and update their profile</p>")
-);
-
+router.put("/:userId/profile", findUserAndUpdateProfile);
+router.put("/:userId/password", isAuthenticated, findUserAndUpdatePassword);
 
 module.exports = router;
