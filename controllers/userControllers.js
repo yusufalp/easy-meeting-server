@@ -48,7 +48,7 @@ const getUserById = async (req, res, next) => {
   }
 };
 
-const findUserAndUpdateProfile = async (req, res, next) => {
+const updateUserProfile = async (req, res, next) => {
   const { userId } = req.params;
   const { firstName, lastName } = req.body;
 
@@ -85,7 +85,7 @@ const findUserAndUpdateProfile = async (req, res, next) => {
   }
 };
 
-const findUserAndUpdatePassword = async (req, res, next) => {
+const updateUserPassword = async (req, res, next) => {
   const { userId } = req.params;
   const { currentPassword, newPassword, confirmNewPassword } = req.body;
 
@@ -146,6 +146,6 @@ const findUserAndUpdatePassword = async (req, res, next) => {
 module.exports = {
   getAllUsers,
   getUserById,
-  findUserAndUpdateProfile,
-  findUserAndUpdatePassword,
+  updateUserProfile,
+  updateUserPassword,
 };

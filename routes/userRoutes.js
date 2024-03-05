@@ -3,8 +3,8 @@ const express = require("express");
 const {
   getAllUsers,
   getUserById,
-  findUserAndUpdateProfile,
-  findUserAndUpdatePassword,
+  updateUserProfile,
+  updateUserPassword,
 } = require("../controllers/userControllers");
 
 const { isAuthenticated } = require("../middleware");
