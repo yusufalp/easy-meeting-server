@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 
 const User = require("../models/userModel");
+const { validatePassword } = require("../utils");
 
 const getAllUsers = async (req, res, next) => {
   try {
@@ -60,7 +61,7 @@ const updateUserProfile = async (req, res, next) => {
 
   if (!firstName || !lastName) {
     return res.status(400).json({
-      error: { message: "First and  last name is required!" },
+      error: { message: "First and last name is required!" },
     });
   }
 
@@ -79,6 +80,7 @@ const updateUserProfile = async (req, res, next) => {
 
     res.status(200).json({
       success: { message: "User profile is updated!" },
+      data: user,
     });
   } catch (error) {
     next(error);
@@ -106,6 +108,17 @@ const updateUserPassword = async (req, res, next) => {
   if (!currentPassword || !newPassword || !confirmNewPassword) {
     return res.status(400).json({
       error: { message: "All fields are required!" },
+    });
+  }
+
+  const [isValidPassword, passwordErrorMessage] = validatePassword(
+    newPassword,
+    confirmNewPassword
+  );
+
+  if (!isValidPassword) {
+    return res.status(400).json({
+      error: { message: passwordErrorMessage },
     });
   }
 
