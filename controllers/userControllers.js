@@ -78,6 +78,9 @@ const updateUserProfile = async (req, res, next) => {
       });
     }
 
+    // remove password before sending it to client
+    user.password = undefined;
+
     res.status(200).json({
       success: { message: "User profile is updated!" },
       data: user,
