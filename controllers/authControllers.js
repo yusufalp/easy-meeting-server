@@ -10,15 +10,17 @@ const signupNewUser = async (req, res, next) => {
     req.body;
 
   if (!firstName || !lastName || !email || !password || !confirmPassword) {
-    return res
-      .status(400)
-      .json({ error: { message: "All fields are required!" } });
+    return res.status(400).json({
+      error: { message: "All fields are required!" },
+    });
   }
 
   const [isValidEmail, emailErrorMessage] = validateEmail(email);
 
   if (!isValidEmail) {
-    return res.status(400).json({ error: { message: emailErrorMessage } });
+    return res.status(400).json({
+      error: { message: emailErrorMessage },
+    });
   }
 
   const [isValidPassword, passwordErrorMessage] = validatePassword(
@@ -27,7 +29,9 @@ const signupNewUser = async (req, res, next) => {
   );
 
   if (!isValidPassword) {
-    return res.status(400).json({ error: { message: passwordErrorMessage } });
+    return res.status(400).json({
+      error: { message: passwordErrorMessage },
+    });
   }
 
   try {
@@ -57,7 +61,9 @@ const signupNewUser = async (req, res, next) => {
 
     await newUserAvailability.save();
 
-    res.status(201).json({ success: { message: "A new user is created!" } });
+    res.status(201).json({
+      success: { message: "A new user is created!" },
+    });
   } catch (error) {
     next(error);
   }
@@ -68,7 +74,9 @@ const loginUser = (req, res, next) => {
     return next(new Error("User is not authenticated!"));
   }
 
-  res.status(200).json({ success: { message: "User is logged in!" } });
+  res.status(200).json({
+    success: { message: "User is logged in!" },
+  });
 };
 
 const logoutUser = (req, res, next) => {
@@ -78,7 +86,9 @@ const logoutUser = (req, res, next) => {
     }
   });
 
-  res.status(200).json({ success: { message: "User is logged out!" } });
+  res.status(200).json({
+    success: { message: "User is logged out!" },
+  });
 };
 
 module.exports = { signupNewUser, loginUser, logoutUser };
