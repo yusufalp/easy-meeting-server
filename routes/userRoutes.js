@@ -13,7 +13,7 @@ const router = express.Router();
 router.get("/", getAllUsers);
 router.get("/:userId", getUserById);
 
-router.put("/:userId/profile", findUserAndUpdateProfile);
-router.put("/:userId/password", isAuthenticated, findUserAndUpdatePassword);
+router.put("/:userId/profile", updateUserProfile);
+router.put("/:userId/password", isAuthenticated, updateUserPassword);
 
 module.exports = router;
