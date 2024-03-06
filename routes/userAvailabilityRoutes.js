@@ -1,24 +1,26 @@
 const express = require("express");
 
+const {
+  getAllUserAvailabilities,
+  getUserAvailabilityByUserId,
+  updateUserAvailability,
+  updateUserAvailabilityEvents,
+  updateUserAvailabilityTimezone,
+  createUserAvailability,
+  deleteUserAvailability,
+} = require("../controllers/userAvailabilityControllers");
+
 const router = express.Router();
 
-router.get("/", (req, res, next) =>
-  res.send("<p>Get all user availabilities</p>")
-);
-router.get("/:userId", (req, res, next) =>
-  res.send("<p>Get a user availability by user id</p>")
-);
+router.get("/", getAllUserAvailabilities);
+router.get("/:userId", getUserAvailabilityByUserId);
 
-router.put("/:userId", (req, res, next) =>
-  res.send("<p>Find a user availability by user id and update</p>")
-);
+router.put("/:userId", updateUserAvailability);
+router.put("/:userId/events", updateUserAvailabilityEvents);
+router.put("/:userId/timezone", updateUserAvailabilityTimezone);
 
-router.post("/:userId", (req, res, next) =>
-  res.send("<p>Create a new user availability for a user by user id</p>")
-);
+router.post("/:userId", createUserAvailability);
 
-router.delete("/:userId", (req, res, next) =>
-  res.send("<p>Delete a user availability by user id</p>")
-);
+router.delete("/:userId", deleteUserAvailability);
 
 module.exports = router;
