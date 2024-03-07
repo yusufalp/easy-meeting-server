@@ -48,7 +48,7 @@ const signupNewUser = async (req, res, next) => {
 
     req.login(newUser, (err) => {
       if (err) {
-        next(err);
+        return next(err);
       }
     });
 
@@ -71,7 +71,9 @@ const signupNewUser = async (req, res, next) => {
 
 const loginUser = (req, res, next) => {
   if (!req.user) {
-    return next(new Error("User is not authenticated!"));
+    return res.status(401).json({
+      error: { message: "User is not authenticated" },
+    });
   }
 
   res.status(200).json({
@@ -82,7 +84,9 @@ const loginUser = (req, res, next) => {
 const logoutUser = (req, res, next) => {
   req.logout((error) => {
     if (error) {
-      next(error);
+      return res.status(400).json({
+        error: { message: "There is a problem logging out!" },
+      });
     }
   });
 
