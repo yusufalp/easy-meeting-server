@@ -15,7 +15,7 @@ const userAvailabilityRoutes = require("./routes/userAvailabilityRoutes");
 const userRoutes = require("./routes/userRoutes");
 
 const app = express();
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 
 app.use(helmet());
 app.use(morgan("combined"));
