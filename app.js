@@ -44,12 +44,14 @@ app.use((err, req, res, next) => {
   console.error("Error occurred:", err);
 
   if (err.code === 11000) {
-    return res
-      .status(400)
-      .json({ error: { message: "Already have an account? Try logging in." } });
+    return res.status(400).json({
+      error: { message: "Already have an account? Try logging in." },
+    });
   }
 
-  res.status(500).json({ success: { message: err.message } });
+  res.status(500).json({
+    success: { message: err.message },
+  });
 });
 
 app.get("/", (req, res, next) => {
