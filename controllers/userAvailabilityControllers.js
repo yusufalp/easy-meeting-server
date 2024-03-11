@@ -40,6 +40,48 @@ const getUserAvailabilityByUserId = async (req, res, next) => {
   }
 };
 
+const createUserAvailability = async (req, res, next) => {
+  const { userId } = req.params;
+  const { timezone } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({
+      error: { message: "User id is required" },
+    });
+  }
+
+  if (!timezone) {
+    return res.status(400).json({
+      error: { message: "Timezone is required" },
+    });
+  }
+
+  try {
+    const userAvailability = await UserAvailability.findOne({ userId });
+
+    if (userAvailability) {
+      return res.status(400).json({
+        error: { message: "User availability already exist!" },
+        data: userAvailability,
+      });
+    }
+
+    const newUserAvailability = new UserAvailability({
+      userId,
+      timezone,
+    });
+
+    await newUserAvailability.save();
+
+    res.status(201).json({
+      success: { message: "A new user availability is created" },
+      data: newUserAvailability,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const updateUserAvailability = (req, res, next) =>
   res.send("<p>Find a user availability by user id and update</p>");
 
@@ -119,48 +161,6 @@ const updateUserAvailabilityTimezone = async (req, res, next) => {
   }
 };
 
-const createUserAvailability = async (req, res, next) => {
-  const { userId } = req.params;
-  const { timezone } = req.body;
-
-  if (!userId) {
-    return res.status(400).json({
-      error: { message: "User id is required" },
-    });
-  }
-
-  if (!timezone) {
-    return res.status(400).json({
-      error: { message: "Timezone is required" },
-    });
-  }
-
-  try {
-    const userAvailability = await UserAvailability.findOne({ userId });
-
-    if (userAvailability) {
-      return res.status(400).json({
-        error: { message: "User availability already exist!" },
-        data: userAvailability,
-      });
-    }
-
-    const newUserAvailability = new UserAvailability({
-      userId,
-      timezone,
-    });
-
-    await newUserAvailability.save();
-
-    res.status(201).json({
-      success: { message: "A new user availability is created" },
-      data: newUserAvailability,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
 const deleteUserAvailability = async (req, res, next) => {
   const { userId } = req.params;
 
@@ -184,9 +184,9 @@ const deleteUserAvailability = async (req, res, next) => {
 module.exports = {
   getAllUserAvailabilities,
   getUserAvailabilityByUserId,
+  createUserAvailability,
   updateUserAvailability,
   updateUserAvailabilityEvents,
   updateUserAvailabilityTimezone,
-  createUserAvailability,
   deleteUserAvailability,
 };
