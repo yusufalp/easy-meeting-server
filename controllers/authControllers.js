@@ -61,8 +61,11 @@ const signupNewUser = async (req, res, next) => {
 
     await newUserAvailability.save();
 
+    newUser.password = undefined;
+
     res.status(201).json({
       success: { message: "A new user is created!" },
+      data: newUser,
     });
   } catch (error) {
     next(error);
@@ -76,8 +79,12 @@ const loginUser = (req, res, next) => {
     });
   }
 
+  const user = { ...req.user._doc };
+  user.password = undefined;
+
   res.status(200).json({
     success: { message: "User is logged in!" },
+    data: user,
   });
 };
 
