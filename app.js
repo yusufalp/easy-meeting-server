@@ -5,6 +5,7 @@ require("./config/authStrategies");
 const express = require("express");
 const passport = require("passport");
 const session = require("express-session");
+const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const path = require("node:path");
@@ -17,6 +18,7 @@ const userRoutes = require("./routes/userRoutes");
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+app.use(cors());
 app.use(helmet());
 app.use(morgan("combined"));
 
