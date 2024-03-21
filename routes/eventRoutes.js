@@ -7,6 +7,7 @@ const {
   createEvent,
   updateEventTitle,
   updateEventParticipants,
+  archiveEvent,
   deleteEvent,
 } = require("../controllers/eventControllers");
 
@@ -20,6 +21,7 @@ router.post("/", createEvent);
 
 router.put("/:eventId/title", updateEventTitle);
 router.put("/:eventId/participants", updateEventParticipants);
+router.put("/:eventId/archive", archiveEvent);
 
 router.delete("/:eventId", deleteEvent);
 
