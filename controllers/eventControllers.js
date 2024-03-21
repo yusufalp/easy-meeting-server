@@ -1,5 +1,6 @@
 const Event = require("../models/eventModel");
 const UserAvailability = require("../models/userAvailabilityModel");
+const User = require("../models/userModel");
 
 const { generateEventTimeSlots } = require("../utils");
 
@@ -53,7 +54,7 @@ const getAllEventsByOwnerId = async (req, res, next) => {
   }
 
   try {
-    const events = await Event.find({ owner: ownerId });
+    const events = await Event.find({ "owner._id": ownerId });
 
     if (!events) {
       return res.status(400).json({
@@ -88,6 +89,14 @@ const createEvent = async (req, res, next) => {
   const timeSlots = generateEventTimeSlots(start, end);
 
   try {
+    const owner = await User.findById(ownerId);
+
+    if (!owner) {
+      return res.status(400).json({
+        error: { message: "There is no user with this owner id!" },
+      });
+    }
+
     const newEvent = new Event({
       title,
       isArchived: false,
@@ -95,7 +104,12 @@ const createEvent = async (req, res, next) => {
         start,
         end,
       },
-      owner: ownerId,
+      owner: {
+        _id: ownerId,
+        firstName: owner.firstName,
+        lastName: owner.lastName,
+        email: owner.email,
+      },
       participants: [ownerId],
       timeSlots,
     });

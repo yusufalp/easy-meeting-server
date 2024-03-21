@@ -9,8 +9,10 @@ const eventSchema = new Schema({
     end: Date,
   },
   owner: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    firstName: String,
+    lastName: String,
+    email: String,
   },
   participants: [
     {
