@@ -1,4 +1,7 @@
 const Event = require("../models/eventModel");
+const UserAvailability = require("../models/userAvailabilityModel");
+
+const { generateEventTimeSlots } = require("../utils");
 
 const getAllEvents = async (req, res, next) => {
   try {
@@ -82,18 +85,34 @@ const createEvent = async (req, res, next) => {
     });
   }
 
+  const timeSlots = generateEventTimeSlots(start, end);
+
   try {
     const newEvent = new Event({
       title,
+      isArchived: false,
       dateRange: {
         start,
         end,
       },
       owner: ownerId,
       participants: [ownerId],
+      timeSlots,
     });
 
     await newEvent.save();
+
+    const userAvailability = await UserAvailability.findOneAndUpdate(
+      { userId: ownerId },
+      { $addToSet: { events: newEvent._id } },
+      { new: true }
+    );
+
+    if (!userAvailability) {
+      return res.status(400).json({
+        error: { message: "User availability not found!" },
+      });
+    }
 
     res.status(201).json({
       success: { message: "Event is created!" },
@@ -179,6 +198,37 @@ const updateEventParticipants = async (req, res, next) => {
   }
 };
 
+const archiveEvent = async (req, res, next) => {
+  const { eventId } = req.params;
+
+  if (!eventId) {
+    return res.status(400).json({
+      error: { message: "Event id is required!" },
+    });
+  }
+
+  try {
+    const event = Event.findByIdAndUpdate(
+      eventId,
+      { $set: { isArchived: true } },
+      { new: true }
+    );
+
+    if (!event) {
+      return res.status(400).json({
+        error: { message: "There is no event found!" },
+      });
+    }
+
+    res.status(200).json({
+      success: { message: "Event is archived!" },
+      data: event,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const deleteEvent = async (req, res, next) => {
   const { eventId } = req.params;
 
@@ -206,5 +256,6 @@ module.exports = {
   createEvent,
   updateEventTitle,
   updateEventParticipants,
+  archiveEvent,
   deleteEvent,
 };
