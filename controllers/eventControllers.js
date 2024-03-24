@@ -82,7 +82,7 @@ const createEvent = async (req, res, next) => {
 
   if (!title || !start || !end) {
     return res.status(400).json({
-      error: { message: "All filed are required!" },
+      error: { message: "All fields are required!" },
     });
   }
 
@@ -99,7 +99,6 @@ const createEvent = async (req, res, next) => {
 
     const newEvent = new Event({
       title,
-      isArchived: false,
       dateRange: {
         start,
         end,

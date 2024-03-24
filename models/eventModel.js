@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const eventSchema = new Schema({
   title: { type: String, required: true },
-  isArchived: Boolean,
+  isArchived: { type: Boolean, default: false },
   dateRange: {
     start: Date,
     end: Date,
