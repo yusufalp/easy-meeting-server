@@ -72,7 +72,8 @@ const getAllEventsByOwnerId = async (req, res, next) => {
 };
 
 const createEvent = async (req, res, next) => {
-  const { title, start, end, ownerId } = req.body;
+  const { title, start, end, ownerId, timeSlots } = req.body;
+  console.log(req.body)
 
   if (!ownerId) {
     return res.status(400).json({
@@ -86,7 +87,13 @@ const createEvent = async (req, res, next) => {
     });
   }
 
-  const timeSlots = generateEventTimeSlots(start, end);
+  if (timeSlots.length === 0) {
+    return res.status(400).json({
+      error: {message: "There is no time selected!"}
+    })
+  }
+
+  // const timeSlots = generateEventTimeSlots(start, end);
 
   try {
     const owner = await User.findById(ownerId);
