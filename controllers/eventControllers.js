@@ -73,7 +73,6 @@ const getAllEventsByOwnerId = async (req, res, next) => {
 
 const createEvent = async (req, res, next) => {
   const { title, start, end, ownerId, timeSlots } = req.body;
-  console.log(req.body)
 
   if (!ownerId) {
     return res.status(400).json({
@@ -89,11 +88,9 @@ const createEvent = async (req, res, next) => {
 
   if (timeSlots.length === 0) {
     return res.status(400).json({
-      error: {message: "There is no time selected!"}
-    })
+      error: { message: "There is no time selected!" },
+    });
   }
-
-  // const timeSlots = generateEventTimeSlots(start, end);
 
   try {
     const owner = await User.findById(ownerId);
@@ -218,6 +215,71 @@ const updateEventParticipants = async (req, res, next) => {
   }
 };
 
+const updateEventTimeSlots = async (req, res, next) => {
+  const { eventId } = req.params;
+  const { userId, date, availableTimes } = req.body;
+
+  if (!eventId) {
+    return res.status(400).json({
+      error: { message: "Event id is required!" },
+    });
+  }
+
+  if (!userId) {
+    return res.status(400).json({
+      error: { message: "User id is required!" },
+    });
+  }
+
+  if (!date || !availableTimes) {
+    return res.status(400).json({
+      error: { message: "Date or times are not selected!" },
+    });
+  }
+
+  try {
+    const event = await Event.findById(eventId);
+
+    if (!event) {
+      return res.status(400).json({
+        error: { message: "There is no event with this id!" },
+      });
+    }
+
+    const timeSlot = event.timeSlots.find(
+      (slot) => new Date(slot.date).getTime() === new Date(date).getTime()
+    );
+
+    if (!timeSlot) {
+      return res.status(400).json({
+        error: { message: "Specific time slot is not present in the event!" },
+      });
+    }
+
+    const participantAvailability = timeSlot.participantAvailability.find(
+      (availability) => availability.userId.equals(userId)
+    );
+
+    if (participantAvailability) {
+      participantAvailability.availableTimes.push(availableTimes);
+    } else {
+      timeSlot.participantAvailability.push({
+        userId: userId,
+        availableTimes: availableTimes,
+      });
+    }
+
+    event.save();
+
+    res.status(200).json({
+      success: { message: "Event is updated!" },
+      data: event,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const archiveEvent = async (req, res, next) => {
   const { eventId } = req.params;
 
@@ -228,7 +290,7 @@ const archiveEvent = async (req, res, next) => {
   }
 
   try {
-    const event = Event.findByIdAndUpdate(
+    const event = await Event.findByIdAndUpdate(
       eventId,
       { $set: { isArchived: true } },
       { new: true }
@@ -276,6 +338,7 @@ module.exports = {
   createEvent,
   updateEventTitle,
   updateEventParticipants,
+  updateEventTimeSlots,
   archiveEvent,
   deleteEvent,
 };
