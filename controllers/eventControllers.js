@@ -269,7 +269,7 @@ const updateEventTimeSlots = async (req, res, next) => {
       });
     }
 
-    event.save();
+    await event.save();
 
     res.status(200).json({
       success: { message: "Event is updated!" },
