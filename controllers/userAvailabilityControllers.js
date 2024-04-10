@@ -82,8 +82,54 @@ const createUserAvailability = async (req, res, next) => {
   }
 };
 
-const updateUserAvailability = (req, res, next) =>
-  res.send("<p>Find a user availability by user id and update</p>");
+const updateUserAvailability = async (req, res, next) => {
+  const { userId } = req.params;
+  const { date, availableTimes } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({
+      error: { message: "User id is required!" },
+    });
+  }
+
+  if (!date || !availableTimes) {
+    return res.status(400).json({
+      error: { message: "Date or times are not selected!" },
+    });
+  }
+
+  try {
+    const userAvailability = await UserAvailability.findOne({ userId });
+
+    if (!userAvailability) {
+      return res.status(400).json({
+        error: { message: "There is no user availability for that user id!" },
+      });
+    }
+
+    const availability = userAvailability.availabilities.find(
+      (availability) => new Date(availability.date).getTime() === date
+    );
+
+    if (availability) {
+      availability.availableTimes.push(availableTimes);
+    } else {
+      userAvailability.availabilities.push({
+        date,
+        availableTimes: availableTimes,
+      });
+    }
+
+    await userAvailability.save();
+
+    res.status(200).json({
+      success: { message: "User availability added!" },
+      data: userAvailability,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 const updateUserAvailabilityEvents = async (req, res, next) => {
   const { userId } = req.params;
