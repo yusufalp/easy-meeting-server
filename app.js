@@ -52,7 +52,7 @@ app.use((err, req, res, next) => {
   }
 
   res.status(500).json({
-    success: { message: err.message },
+    error: { message: err.message },
   });
 });
 
