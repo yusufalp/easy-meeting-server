@@ -247,7 +247,7 @@ const updateEventTimeSlots = async (req, res, next) => {
     }
 
     const timeSlot = event.timeSlots.find(
-      (slot) => new Date(slot.date).getTime() === new Date(date).getTime()
+      (slot) => new Date(slot.date).getTime() === date
     );
 
     if (!timeSlot) {
