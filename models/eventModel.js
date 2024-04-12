@@ -23,7 +23,7 @@ const eventSchema = new Schema({
   timeSlots: [
     {
       date: Date,
-      participantAvailability: [
+      participantAvailabilities: [
         {
           userId: {
             type: mongoose.Schema.Types.ObjectId,

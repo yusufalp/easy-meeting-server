@@ -256,14 +256,14 @@ const updateEventTimeSlots = async (req, res, next) => {
       });
     }
 
-    const participantAvailability = timeSlot.participantAvailability.find(
-      (availability) => availability.userId.equals(userId)
+    const participantAvailability = timeSlot.participantAvailabilities.find(
+      (participantAvailability) => participantAvailability.userId.equals(userId)
     );
 
     if (participantAvailability) {
       participantAvailability.availableTimes.push(availableTimes);
     } else {
-      timeSlot.participantAvailability.push({
+      timeSlot.participantAvailabilities.push({
         userId: userId,
         availableTimes: availableTimes,
       });
