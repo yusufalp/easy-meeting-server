@@ -2,8 +2,6 @@ const Event = require("../models/eventModel");
 const UserAvailability = require("../models/userAvailabilityModel");
 const User = require("../models/userModel");
 
-const { generateEventTimeSlots } = require("../utils");
-
 const getAllEvents = async (req, res, next) => {
   try {
     const events = await Event.find({});
