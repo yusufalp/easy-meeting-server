@@ -111,14 +111,24 @@ const loginUser = (req, res, next) => {
 const logoutUser = (req, res, next) => {
   req.logout((error) => {
     if (error) {
-      return res.status(400).json({
+      return res.status(500).json({
         error: { message: "There is a problem logging out!" },
       });
     }
-  });
 
-  res.status(200).json({
-    success: { message: "User is logged out!" },
+    req.session.destroy((error) => {
+      if (error) {
+        return res.status(500).json({
+          error: { message: "Failed to destroy session during logout!" },
+        });
+      }
+
+      res.clearCookie("connect.sid");
+
+      res.status(200).json({
+        success: { message: "Logout successful!" },
+      });
+    });
   });
 };
 

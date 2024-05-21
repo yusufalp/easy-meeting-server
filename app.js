@@ -18,7 +18,7 @@ const userRoutes = require("./routes/userRoutes");
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(helmet());
 app.use(morgan("combined"));
 
@@ -31,6 +31,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     secret: process.env.SECRET_KEY,
+    cookie: { secure: false },
   })
 );
 
