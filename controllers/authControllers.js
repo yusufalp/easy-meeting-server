@@ -1,3 +1,4 @@
+const passport = require("passport");
 const bcrypt = require("bcrypt");
 
 const User = require("../models/userModel");
@@ -80,19 +81,31 @@ const signupNewUser = async (req, res, next) => {
 };
 
 const loginUser = (req, res, next) => {
-  if (!req.user) {
-    return res.status(401).json({
-      error: { message: "User is not authenticated" },
+  passport.authenticate("local", (error, user, info) => {
+    if (error) {
+      return next(error);
+    }
+
+    if (!user) {
+      return res.status(401).json({
+        error: { message: info.message },
+      });
+    }
+
+    req.login(user, (error) => {
+      if (error) {
+        return next(error);
+      }
+
+      const user = { ...req.user._doc };
+      user.password = undefined;
+
+      return res.status(200).json({
+        success: { message: "Login successful" },
+        data: user,
+      });
     });
-  }
-
-  const user = { ...req.user._doc };
-  user.password = undefined;
-
-  res.status(200).json({
-    success: { message: "User is logged in!" },
-    data: user,
-  });
+  })(req, res, next);
 };
 
 const logoutUser = (req, res, next) => {

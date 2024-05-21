@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.post("/signup", signupNewUser);
 
-router.post("/login", passport.authenticate("local"), loginUser);
+router.post("/login", loginUser);
 
 router.post("/logout", logoutUser);
 
