@@ -1,10 +1,13 @@
 const passport = require("passport");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const User = require("../models/userModel");
 const UserAvailability = require("../models/userAvailabilityModel");
 
 const { validateEmail, validatePassword } = require("../utils/index");
+
+const JWT_SECRET = process.env.JWT_SECRET_KEY || "i-hope-i-will-not-need-this";
 
 const signupNewUser = async (req, res, next) => {
   const { firstName, lastName, email, password, confirmPassword, timezone } =
@@ -71,9 +74,13 @@ const signupNewUser = async (req, res, next) => {
 
     newUser.password = undefined;
 
-    res.status(201).json({
+    const token = jwt.sign({ id: userId, email: email }, JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
+    return res.status(201).json({
       success: { message: "A new user is created!" },
-      data: newUser,
+      data: { newUser, token },
     });
   } catch (error) {
     next(error);
@@ -100,9 +107,13 @@ const loginUser = (req, res, next) => {
       const user = { ...req.user._doc };
       user.password = undefined;
 
+      const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
+        expiresIn: "1d",
+      });
+
       return res.status(200).json({
         success: { message: "Login successful" },
-        data: user,
+        data: { user, token },
       });
     });
   })(req, res, next);
@@ -125,7 +136,7 @@ const logoutUser = (req, res, next) => {
 
       res.clearCookie("connect.sid");
 
-      res.status(200).json({
+      return res.status(200).json({
         success: { message: "Logout successful!" },
       });
     });
